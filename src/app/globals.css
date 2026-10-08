@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #fdfbf7;
+    --foreground: #221710;
+    --card: #ffffff;
+    --card-foreground: #221710;
+    --primary: #b87333;
+    --primary-hover: #a36224;
+    --primary-light: #fbf3eb;
+    --border: #ebdcd0;
+    --muted: #6e5c50;
+    --muted-light: #f5ede4;
+    --accent: #d4955b;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Warm Light Coffee Glassmorphism */
+.coffee-glass {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(184, 115, 51, 0.15);
+}
+
+.coffee-glass-elevated {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(184, 115, 51, 0.2);
+  box-shadow: 0 12px 36px -8px rgba(80, 50, 25, 0.08), 0 4px 12px -2px rgba(80, 50, 25, 0.04);
+}
+
+.coffee-card-shadow {
+  box-shadow: 0 6px 24px -4px rgba(70, 45, 20, 0.06), 0 2px 8px -2px rgba(70, 45, 20, 0.04);
+}
+
+.coffee-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.coffee-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -6px rgba(70, 45, 20, 0.12), 0 4px 12px -2px rgba(70, 45, 20, 0.06);
+}
+
+.coffee-badge-light {
+  background: linear-gradient(135deg, #fbf2ea 0%, #f4e4d4 100%);
+  border: 1px solid rgba(184, 115, 51, 0.25);
+  color: #9c5c28;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fdfbf7;
+}
+::-webkit-scrollbar-thumb {
+  background: #dfcbba;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b87333;
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
