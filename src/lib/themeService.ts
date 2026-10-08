@@ -22,15 +22,49 @@ export const themeService = {
     return THEME_PRESETS.find((p) => p.id === id) || THEME_PRESETS[0];
   },
 
-  saveTheme(themeId: string): void {
+  saveLocalOnly(themeId: string): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(STORAGE_KEY, themeId);
+    } catch {
+      // ignore
+    }
+  },
+
+  async fetchServerThemeId(): Promise<string | null> {
+    if (typeof window === 'undefined') return null;
+    try {
+      const res = await fetch('/api/theme', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.themeId && THEME_PRESETS.some((p) => p.id === data.themeId)) {
+          return data.themeId;
+        }
+      }
+    } catch {
+      // offline or silent fallback
+    }
+    return null;
+  },
+
+  async saveTheme(themeId: string): Promise<void> {
     if (typeof window === 'undefined') return;
     try {
       localStorage.setItem(STORAGE_KEY, themeId);
       this.applyTheme(themeId);
-      // Dispatch storage event for other tabs/listeners
       window.dispatchEvent(new Event('themechange'));
+
+      // Persist to server so ALL devices (phones, tablets, other PCs) adopt this theme as default
+      await fetch('/api/theme', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ themeId }),
+      });
     } catch (e) {
-      console.warn('Failed to save theme:', e);
+      console.warn('Failed to save theme to server:', e);
     }
   },
 

@@ -548,7 +548,7 @@ export const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut 
                   </div>
                   <p className="text-xs sm:text-sm text-[#786455] max-w-2xl leading-relaxed">
                     Buradan RoastBar vebsaytının vizual ab-havasını və rəng ahəngini bir kliklə dəyişə bilərsiniz.
-                    Seçilmiş palitra bütün səhifələrdə (Menyu, Əsas səhifə, Düymələr, Vurğular) dərhal tətbiq olunur.
+                    Seçilmiş palitra avtomatik olaraq saytın <strong>standart (default)</strong> dizaynı kimi yadda saxlanılır və bütün cihazlarda (kompüter, mobil telefon, planşet) eyni anda tətbiq olunur.
                   </p>
                 </div>
 
@@ -674,7 +674,7 @@ export const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut 
                       type="button"
                       onClick={() => {
                         setTheme(preset.id);
-                        setThemeSuccessMsg(`"${preset.name_az}" palitrası tətbiq edildi!`);
+                        setThemeSuccessMsg(`"${preset.name_az}" palitrası bütün cihazlar üçün standart olaraq tətbiq edildi!`);
                         setTimeout(() => setThemeSuccessMsg(null), 4000);
                       }}
                       className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
