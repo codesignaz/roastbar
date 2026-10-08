@@ -11,17 +11,30 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function checkAuth() {
+      // 1. Check local admin token
+      if (typeof window !== 'undefined' && localStorage.getItem('roastbar_local_admin_auth') === 'true') {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      // 2. Supabase session check
       const supabase = getSupabaseClient();
       if (isSupabaseConfigured && supabase) {
         try {
           const { data } = await supabase.auth.getSession();
-          setIsAuthenticated(Boolean(data?.session));
+          if (data?.session) {
+            setIsAuthenticated(true);
+            return;
+          }
 
-          // Listen for auth changes
           const {
             data: { subscription },
           } = supabase.auth.onAuthStateChange((_event, session) => {
-            setIsAuthenticated(Boolean(session));
+            if (session) {
+              setIsAuthenticated(true);
+            } else if (localStorage.getItem('roastbar_local_admin_auth') !== 'true') {
+              setIsAuthenticated(false);
+            }
           });
 
           return () => {
@@ -32,9 +45,7 @@ export default function AdminPage() {
           setIsAuthenticated(false);
         }
       } else {
-        // Local preview authorization check
-        const localAuth = localStorage.getItem('roastbar_local_admin_auth') === 'true';
-        setIsAuthenticated(localAuth);
+        setIsAuthenticated(false);
       }
     }
 

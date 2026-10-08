@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerThemeId, saveServerTheme } from '@/lib/themeServer';
 import { THEME_PRESETS } from '@/lib/themePresets';
+import { serverDb } from '@/lib/serverDb';
 
 export async function GET() {
   const themeId = getServerThemeId();
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
     }
 
     const saved = saveServerTheme(themeId);
+    serverDb.setThemeId(themeId);
     if (!saved) {
       return NextResponse.json(
         { error: 'Failed to persist theme on server' },

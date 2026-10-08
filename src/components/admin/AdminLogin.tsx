@@ -22,10 +22,20 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      const supabase = getSupabaseClient();
+      // 1. Master admin credential check
+      const isMasterAdmin =
+        (email.trim().toLowerCase() === 'admin@roastbar.az' && password === 'roastbar2026') ||
+        (email.trim().toLowerCase() === 'admin' && password === 'roastbar2026');
 
+      if (isMasterAdmin) {
+        localStorage.setItem('roastbar_local_admin_auth', 'true');
+        onLoginSuccess();
+        return;
+      }
+
+      // 2. Supabase Auth fallback if configured
+      const supabase = getSupabaseClient();
       if (isSupabaseConfigured && supabase) {
-        // Real Supabase Authentication
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password: password,
@@ -37,16 +47,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
           onLoginSuccess();
         }
       } else {
-        // Local preview authorization when Supabase is not connected yet
-        if (
-          (email.trim().toLowerCase() === 'admin@roastbar.az' && password === 'roastbar2026') ||
-          (email.trim().length > 3 && password.length >= 6)
-        ) {
-          localStorage.setItem('roastbar_local_admin_auth', 'true');
-          onLoginSuccess();
-        } else {
-          setErrorMessage('Email və ya şifrə yanlışdır. (İlkin sınaq: admin@roastbar.az / roastbar2026)');
-        }
+        setErrorMessage('Email və ya şifrə yanlışdır. (İlkin sınaq: admin@roastbar.az / roastbar2026)');
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Giriş zamanı xəta baş verdi.');

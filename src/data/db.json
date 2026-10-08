@@ -1,0 +1,401 @@
+{
+  "theme": "latte",
+  "slogans": {
+    "az": {
+      "heroBadge": "Boutique Coffee Bar",
+      "heroTitle": "Hər Qurtumda Əsl Qəhvə Həzzini Yaşayın",
+      "heroSubtitle": "Təzə qovrulmuş tək mənşəli dənələr, peşəkar baristalar və axşam 00:30-dək rahat atmosfer.",
+      "heroViewMenuBtn": "Tam Menyuya Bax",
+      "heroVisitUsBtn": "Bizi Ziyarət Edin",
+      "brandTagline": "Premium Qəhvə & Desert Evi",
+      "shortDesc": "Bakının mərkəzində seçilmiş qəhvə dənələri, sənətkar yanaşması və rahat ab-hava.",
+      "featuredBannerBadge": "Günün Seçimi / Featured",
+      "menuTitle": "Bizim Menyu",
+      "menuSubtitle": "Hər zövqə uyğun seçilmiş qəhvələr, təzə sıxılmış içkilər və xüsusi desertlər.",
+      "galleryTitle": "İnteryer & Ab-hava",
+      "gallerySubtitle": "İşləmək, söhbət etmək və xoş xatirələr yaratmaq üçün nəzərdə tutulmuş isti guşəmiz.",
+      "instagramTitle": "Bizi Instagram-da İzləyin",
+      "instagramSubtitle": "Ən son anlar, yeni dadlar və xüsusi təkliflərimiz @roastbarbaku səhifəsində.",
+      "contactTitle": "Görüş Yeri: RoastBar",
+      "contactSubtitle": "Şəhərin ürəyində sevdiyiniz qəhvə ilə gününüzü unudulmaz edin."
+    },
+    "en": {
+      "heroBadge": "Boutique Coffee Bar",
+      "heroTitle": "Crafted Moments in Every Single Sip",
+      "heroSubtitle": "Single-origin roast profiles, master baristas, and an inspiring ambiance open until 00:30 daily.",
+      "heroViewMenuBtn": "Explore Full Menu",
+      "heroVisitUsBtn": "Visit Our Bar",
+      "brandTagline": "Artisan Specialty Coffee & Desserts",
+      "shortDesc": "Artisanal single-origin beans, precision brewing, and a cozy haven in the heart of Baku.",
+      "featuredBannerBadge": "Barista's Choice / Featured",
+      "menuTitle": "Curated Menu",
+      "menuSubtitle": "From delicate pour-overs and creamy signatures to fresh pastries and artisan cheesecakes.",
+      "galleryTitle": "Interior & Vibe",
+      "gallerySubtitle": "An intimate sanctuary designed for inspiring work, meaningful talks, and pure relaxation.",
+      "instagramTitle": "Follow Us on Instagram",
+      "instagramSubtitle": "Behind-the-scenes coffee stories, fresh drops, and daily moments @roastbarbaku.",
+      "contactTitle": "Where to Find RoastBar",
+      "contactSubtitle": "Located on Shihali Gurbanov (Fizuli) 2/15. We are ready to brew your favorite cup."
+    },
+    "ru": {
+      "heroBadge": "Бутик-кофейня в Баку",
+      "heroTitle": "Истинное Удовольствие в Каждой Чашке",
+      "heroSubtitle": "Моносорта спешелти кофе, опытные бариста и вдохновляющая атмосфера до 00:30 каждый день.",
+      "heroViewMenuBtn": "Смотреть Меню",
+      "heroVisitUsBtn": "Прийти в Кофейню",
+      "brandTagline": "Спешелти Кофе & Авторские Десерты",
+      "shortDesc": "Отборное зерно свежей обжарки, мастерство бариста и уютная атмосфера в центре Баку.",
+      "featuredBannerBadge": "Выбор Бариста / Рекомендация",
+      "menuTitle": "Наше Меню",
+      "menuSubtitle": "От классического эспрессо и фильтр-кофе до авторских напитков и свежей выпечки.",
+      "galleryTitle": "Интерьер и Атмосфера",
+      "gallerySubtitle": "Теплое и эстетичное пространство для продуктивной работы, встреч и душевных бесед.",
+      "instagramTitle": "Мы в Instagram",
+      "instagramSubtitle": "Кофейная эстетика, закулисье и ежедневные истории на нашей странице @roastbarbaku.",
+      "contactTitle": "Встречаемся в RoastBar",
+      "contactSubtitle": "Насладитесь любимым кофе и десертами в самом сердце Баку."
+    }
+  },
+  "categories": [
+    {
+      "id": "a0000001-0000-0000-0000-000000000001",
+      "name_az": "İsti İçkilər",
+      "name_en": "Hot Drinks",
+      "name_ru": "Горячие напитки",
+      "slug": "hot-drinks",
+      "display_order": 1,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "a0000001-0000-0000-0000-000000000002",
+      "name_az": "Soyuq və Xüsusi",
+      "name_en": "Cold & Specialty",
+      "name_ru": "Холодные и спешелти",
+      "slug": "cold-drinks",
+      "display_order": 2,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "a0000001-0000-0000-0000-000000000003",
+      "name_az": "Manual Brew & Filter",
+      "name_en": "Manual Brew & Filter",
+      "name_ru": "Фильтр и альтернатива",
+      "slug": "filter-coffee",
+      "display_order": 3,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "a0000001-0000-0000-0000-000000000004",
+      "name_az": "Xüsusi Desertlər",
+      "name_en": "Artisan Desserts",
+      "name_ru": "Авторские десерты",
+      "slug": "desserts",
+      "display_order": 4,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "a0000001-0000-0000-0000-000000000005",
+      "name_az": "Səhər Yeməyi & Bites",
+      "name_en": "Breakfast & Bites",
+      "name_ru": "Завтраки и перекусы",
+      "slug": "breakfast",
+      "display_order": 5,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    }
+  ],
+  "products": [
+    {
+      "id": "b0000001-0000-0000-0000-000000000002",
+      "category_id": null,
+      "name_az": "Flat White",
+      "name_en": "Flat White",
+      "name_ru": "Флэт Уайт",
+      "description_az": "İkiqat ristretto və xırda məsaməli mikro-köpüklü südün balanslı harmoniyası.",
+      "description_en": "Double shot ristretto with silky microfoam milk for a rich, intense coffee forward taste.",
+      "description_ru": "Двойной шот ристретто с идеальной шелковистой микропенкой.",
+      "base_price": 6,
+      "sizes": [
+        {
+          "name": "Standard",
+          "price": 6,
+          "volume": "200ml"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Classic",
+        "Specialty"
+      ],
+      "display_order": 2,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T22:42:30.651655+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000003",
+      "category_id": "a0000001-0000-0000-0000-000000000001",
+      "name_az": "Spanish Cortado",
+      "name_en": "Spanish Cortado",
+      "name_ru": "Испанский Кортадо",
+      "description_az": "Espresso və qatılaşdırılmış südün bərabər nisbətdə mükəmməl vəhdəti.",
+      "description_en": "Rich espresso cut with an equal amount of warm textured milk and a touch of condensed milk.",
+      "description_ru": "Насыщенный эспрессо со вспененным молоком и нежной ноткой сгущенного молока.",
+      "base_price": 5.5,
+      "sizes": [
+        {
+          "name": "Standard",
+          "price": 5.5,
+          "volume": "150ml"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Popular"
+      ],
+      "display_order": 3,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000004",
+      "category_id": "a0000001-0000-0000-0000-000000000001",
+      "name_az": "Cappuccino Crema",
+      "name_en": "Cappuccino Crema",
+      "name_ru": "Капучино Крема",
+      "description_az": "Dərin espresso bazası, qalın qaymaqlı köpük və incə kakao tozu ilə.",
+      "description_en": "A deep specialty espresso base topped with creamy dense foam and cocoa dust.",
+      "description_ru": "Спешелти эспрессо с густой сливочной пенкой и щепоткой какао.",
+      "base_price": 6,
+      "sizes": [
+        {
+          "name": "Small",
+          "price": 6,
+          "volume": "220ml"
+        },
+        {
+          "name": "Medium",
+          "price": 7,
+          "volume": "320ml"
+        },
+        {
+          "name": "Large",
+          "price": 8,
+          "volume": "420ml"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Favorite"
+      ],
+      "display_order": 4,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000006",
+      "category_id": "a0000001-0000-0000-0000-000000000002",
+      "name_az": "Iced Salted Caramel Macchiato",
+      "name_en": "Iced Salted Caramel Macchiato",
+      "name_ru": "Айс Соленая Карамель Маккиато",
+      "description_az": "Vanil şərbəti, soyuq süd, espresso və ev üsulu duzlu karamel sousu.",
+      "description_en": "Fresh espresso poured over cold milk, Madagascar vanilla, and house-made salted caramel drizzle.",
+      "description_ru": "Освежающий напиток с домашней соленой карамелью, мадагаскарской ванилью и эспрессо.",
+      "base_price": 7.5,
+      "sizes": [
+        {
+          "name": "Medium",
+          "price": 7.5,
+          "volume": "380ml"
+        },
+        {
+          "name": "Large",
+          "price": 8.5,
+          "volume": "480ml"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Sweet",
+        "Iced"
+      ],
+      "display_order": 6,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000007",
+      "category_id": "a0000001-0000-0000-0000-000000000003",
+      "name_az": "V60 Pour Over - Geisha Panama",
+      "name_en": "V60 Pour Over - Geisha Panama",
+      "name_ru": "V60 Фильтр - Гейша Панама",
+      "description_az": "Yapon V60 üsulu ilə dəmlənmiş tək mənşəli nadir qəhvə. Portağal çiçəyi və berqamot notları.",
+      "description_en": "Handcrafted V60 brew using prize-winning Panama Geisha. Delicate floral notes, bergamot, and sweet apricot.",
+      "description_ru": "Ручной пуровер V60 на редком зерне Панама Гейша с нотами персика, жасмина и цитрусовых.",
+      "base_price": 12,
+      "sizes": [
+        {
+          "name": "Server",
+          "price": 12,
+          "volume": "250ml"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Specialty",
+        "Single Origin"
+      ],
+      "display_order": 7,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000008",
+      "category_id": "a0000001-0000-0000-0000-000000000004",
+      "name_az": "San Sebastian Cheesecake",
+      "name_en": "San Sebastian Cheesecake",
+      "name_ru": "Чизкейк Сан-Себастьян",
+      "description_az": "Yanıq qabığı və içərisində ipək kimi axıcı kremli pendiri ilə məşhur Bask çizkeyki. İsti Belçika şokoladı ilə servis olunur.",
+      "description_en": "Famous Basque burnt cheesecake with a caramelized crust and gooey molten cream center, served with warm Belgian chocolate.",
+      "description_ru": "Баскский обожженный чизкейк с нежнейшей кремовой текстурой, подается с теплым бельгийским шоколадом.",
+      "base_price": 9,
+      "sizes": [
+        {
+          "name": "Portion",
+          "price": 9,
+          "volume": "180g"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Artisan Dessert",
+        "Must Try"
+      ],
+      "display_order": 8,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000009",
+      "category_id": "a0000001-0000-0000-0000-000000000004",
+      "name_az": "Pistachio Cruffin",
+      "name_en": "Pistachio Cruffin",
+      "name_ru": "Краффин с фисташкой",
+      "description_az": "Kruasan və mafin kəsişməsində qat-qat xırtıldayan xəmir, bol püstəli krem ilə.",
+      "description_en": "Flaky laminated croissant-muffin hybrid loaded with roasted pistachio custard cream.",
+      "description_ru": "Хрустящий слоеный гибрид круассана и маффина с нежнейшим фисташковым заварным кремом.",
+      "base_price": 7,
+      "sizes": [
+        {
+          "name": "Piece",
+          "price": 7,
+          "volume": "140g"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Bakery"
+      ],
+      "display_order": 9,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    },
+    {
+      "id": "b0000001-0000-0000-0000-000000000010",
+      "category_id": "a0000001-0000-0000-0000-000000000005",
+      "name_az": "Avocado & Poached Egg Brioche",
+      "name_en": "Avocado & Poached Egg Brioche",
+      "name_ru": "Бриошь с авокадо и яйцом пашот",
+      "description_az": "Qızardılmış kərə yağlı brioş çörəyi, təzə avokado kremı, paşot yumurtası və hollandez sousu.",
+      "description_en": "Toasted artisan butter brioche topped with fresh smashed avocado, organic poached egg, and microgreens.",
+      "description_ru": "Поджаренная сливочная бриошь, пюре из спелого авокадо, яйцо пашот и микрозелень.",
+      "base_price": 11.5,
+      "sizes": [
+        {
+          "name": "Portion",
+          "price": 11.5,
+          "volume": "260g"
+        }
+      ],
+      "image_url": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80",
+      "is_featured": false,
+      "is_available": true,
+      "tags": [
+        "Breakfast",
+        "Fresh"
+      ],
+      "display_order": 10,
+      "created_at": "2026-10-08T21:19:55.662267+00:00",
+      "updated_at": "2026-10-08T21:33:39.078249+00:00"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "c0000001-0000-0000-0000-000000000001",
+      "image_url": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "RoastBar espresso barı və barista məkanı",
+      "caption_en": "RoastBar specialty espresso bar and artisan workstation",
+      "caption_ru": "Эспрессо-бар RoastBar и рабочая зона бариста",
+      "display_order": 1,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "c0000001-0000-0000-0000-000000000002",
+      "image_url": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "İsti və sakit oturma guşəsi, Şihali Qurbanov 2/15",
+      "caption_en": "Warm, cozy lounge corner for relaxed conversations & work",
+      "caption_ru": "Уютный уголок для отдыха и продуктивной работы",
+      "display_order": 2,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "c0000001-0000-0000-0000-000000000003",
+      "image_url": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "Təzə qovrulmuş seçilmiş qəhvə dənələri",
+      "caption_en": "Freshly roasted specialty beans from leading origins",
+      "caption_ru": "Свежеобжаренные спешелти зерна со всего мира",
+      "display_order": 3,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "c0000001-0000-0000-0000-000000000004",
+      "image_url": "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "Axşam ab-havası və isti işıqlandırma",
+      "caption_en": "Intimate evening ambiance and warm architectural lighting",
+      "caption_ru": "Вечерняя атмосфера и теплое камерное освещение",
+      "display_order": 4,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "c0000001-0000-0000-0000-000000000005",
+      "image_url": "https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "Günün hər saatında xüsusi anlar",
+      "caption_en": "Crafting exceptional coffee moments all day long",
+      "caption_ru": "Идеальные кофейные моменты каждый день",
+      "display_order": 5,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    },
+    {
+      "id": "c0000001-0000-0000-0000-000000000006",
+      "image_url": "https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=1200&q=85",
+      "caption_az": "RoastBar daxili interyer dizaynı",
+      "caption_en": "Modern boutique aesthetic and botanical coffee bar design",
+      "caption_ru": "Современный дизайн кофейни и живые растения",
+      "display_order": 6,
+      "created_at": "2026-10-08T21:19:55.662267+00:00"
+    }
+  ],
+  "updatedAt": "2026-10-08T23:49:31.788Z"
+}

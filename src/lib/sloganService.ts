@@ -120,12 +120,38 @@ export const sloganService = {
     return DEFAULT_MULTILINGUAL_SLOGANS;
   },
 
+  async syncWithServer(): Promise<MultilingualSlogans | null> {
+    if (typeof window === 'undefined') return null;
+    try {
+      const res = await fetch('/api/slogans', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && (data.az || data.en || data.ru)) {
+          const merged: MultilingualSlogans = {
+            az: { ...DEFAULT_MULTILINGUAL_SLOGANS.az, ...(data.az || {}) },
+            en: { ...DEFAULT_MULTILINGUAL_SLOGANS.en, ...(data.en || {}) },
+            ru: { ...DEFAULT_MULTILINGUAL_SLOGANS.ru, ...(data.ru || {}) },
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          window.dispatchEvent(new Event('sloganschange'));
+          return merged;
+        }
+      }
+    } catch (e) {
+      // offline or silent fallback
+    }
+    return null;
+  },
+
   getSlogansForLocale(locale: SupportedLocale): LanguageSlogans {
     const all = this.getMultilingualSlogans();
     return all[locale] || all.az || DEFAULT_MULTILINGUAL_SLOGANS.az;
   },
 
-  saveSlogansForLocale(locale: SupportedLocale, slogans: Partial<LanguageSlogans>): void {
+  async saveSlogansForLocale(locale: SupportedLocale, slogans: Partial<LanguageSlogans>): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
@@ -136,23 +162,37 @@ export const sloganService = {
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
       window.dispatchEvent(new Event('sloganschange'));
+
+      // Persist to central database server so all devices see the change
+      await fetch('/api/slogans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ locale, slogans }),
+      });
     } catch (e) {
       console.warn('Failed to save locale slogans:', e);
     }
   },
 
-  saveAllSlogans(newAll: MultilingualSlogans): void {
+  async saveAllSlogans(newAll: MultilingualSlogans): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newAll));
       window.dispatchEvent(new Event('sloganschange'));
+
+      // Persist to central database server
+      await fetch('/api/slogans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ all: newAll }),
+      });
     } catch (e) {
       console.warn('Failed to save all slogans:', e);
     }
   },
 
-  resetLocaleSlogans(locale: SupportedLocale): void {
+  async resetLocaleSlogans(locale: SupportedLocale): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
@@ -160,17 +200,29 @@ export const sloganService = {
       all[locale] = { ...DEFAULT_MULTILINGUAL_SLOGANS[locale] };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
       window.dispatchEvent(new Event('sloganschange'));
+
+      await fetch('/api/slogans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resetLocale: locale }),
+      });
     } catch (e) {
       console.warn('Failed to reset locale slogans:', e);
     }
   },
 
-  resetAllSlogans(): void {
+  async resetAllSlogans(): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
       localStorage.removeItem(STORAGE_KEY);
       window.dispatchEvent(new Event('sloganschange'));
+
+      await fetch('/api/slogans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resetAll: true }),
+      });
     } catch (e) {
       console.warn('Failed to reset all slogans:', e);
     }

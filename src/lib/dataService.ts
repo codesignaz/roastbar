@@ -38,6 +38,27 @@ function saveToLocalStorage<T>(key: string, items: T[]) {
 export const dataService = {
   // ================= CATEGORIES =================
   async getCategories(): Promise<Category[]> {
+    // 1. Fetch from centralized backend database
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/categories', {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            memoryCategories = data;
+            saveToLocalStorage(LOCAL_STORAGE_KEYS.CATEGORIES, data);
+            return data;
+          }
+        }
+      } catch (err) {
+        // network fallback
+      }
+    }
+
+    // 2. Fallback to Supabase if available
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
       try {
@@ -47,69 +68,89 @@ export const dataService = {
           .order('display_order', { ascending: true });
         
         if (!error && data && data.length > 0) {
+          memoryCategories = data;
+          saveToLocalStorage(LOCAL_STORAGE_KEYS.CATEGORIES, data);
           return data;
         }
       } catch (err) {
-        console.warn('Supabase fetch categories failed, using fallback:', err);
+        console.warn('Supabase fetch categories fallback:', err);
       }
     }
+
     return getStoredOrInitial(LOCAL_STORAGE_KEYS.CATEGORIES, memoryCategories);
   },
 
   async saveCategory(category: Partial<Category>): Promise<Category> {
+    // 1. Persist to centralized backend database
+    let serverSaved: Category | null = null;
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(category),
+      });
+      if (res.ok) {
+        serverSaved = await res.json();
+      }
+    } catch (e) {
+      console.warn('API saveCategory network notice:', e);
+    }
+
+    // 2. Also try Supabase if session exists
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      if (category.id) {
-        const { data, error } = await supabase
-          .from('categories')
-          .update(category)
-          .eq('id', category.id)
-          .select()
-          .single();
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from('categories')
-          .insert(category)
-          .select()
-          .single();
-        if (error) throw error;
-        return data;
+      try {
+        if (category.id) {
+          await supabase.from('categories').update(category).eq('id', category.id);
+        } else {
+          await supabase.from('categories').insert(category);
+        }
+      } catch (err) {
+        // silent fallback
       }
     }
 
-    // Local fallback
+    // 3. Update local cache
     const items = getStoredOrInitial<Category>(LOCAL_STORAGE_KEYS.CATEGORIES, memoryCategories);
-    let updated: Category;
-    if (category.id) {
-      const idx = items.findIndex((i) => i.id === category.id);
-      if (idx !== -1) {
-        updated = { ...items[idx], ...category } as Category;
-        items[idx] = updated;
-      } else {
-        updated = category as Category;
-        items.push(updated);
-      }
+    const resultCat: Category = serverSaved || {
+      ...category,
+      id: category.id || 'cat-' + Date.now(),
+      name_az: category.name_az || '',
+      name_en: category.name_en || '',
+      name_ru: category.name_ru || '',
+      slug: category.slug || 'category-' + Date.now(),
+      display_order: category.display_order || items.length + 1,
+      created_at: category.created_at || new Date().toISOString(),
+    } as Category;
+
+    const idx = items.findIndex((i) => i.id === resultCat.id);
+    if (idx !== -1) {
+      items[idx] = resultCat;
     } else {
-      updated = {
-        ...category,
-        id: 'cat-' + Date.now(),
-        display_order: items.length + 1,
-      } as Category;
-      items.push(updated);
+      items.push(resultCat);
     }
+
     memoryCategories = items;
     saveToLocalStorage(LOCAL_STORAGE_KEYS.CATEGORIES, items);
-    return updated;
+    return resultCat;
   },
 
   async deleteCategory(id: string): Promise<void> {
+    // 1. Delete on central server
+    try {
+      await fetch(`/api/categories?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch (e) {
+      console.warn('API deleteCategory notice:', e);
+    }
+
+    // 2. Delete on Supabase if session exists
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.from('categories').delete().eq('id', id);
-      if (error) throw error;
-      return;
+      try {
+        await supabase.from('categories').delete().eq('id', id);
+      } catch (err) {
+        // silent fallback
+      }
     }
 
     const items = getStoredOrInitial<Category>(LOCAL_STORAGE_KEYS.CATEGORIES, memoryCategories);
@@ -120,6 +161,27 @@ export const dataService = {
 
   // ================= PRODUCTS =================
   async getProducts(): Promise<Product[]> {
+    // 1. Fetch from centralized backend database
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/products', {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            memoryProducts = data;
+            saveToLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS, data);
+            return data;
+          }
+        }
+      } catch (err) {
+        // network fallback
+      }
+    }
+
+    // 2. Fallback to Supabase if available
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
       try {
@@ -129,12 +191,15 @@ export const dataService = {
           .order('display_order', { ascending: true });
 
         if (!error && data && data.length > 0) {
+          memoryProducts = data;
+          saveToLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS, data);
           return data;
         }
       } catch (err) {
-        console.warn('Supabase fetch products failed, using fallback:', err);
+        console.warn('Supabase fetch products fallback:', err);
       }
     }
+
     const categories = await this.getCategories();
     const catMap = new Map(categories.map((c) => [c.id, c]));
     const prods = getStoredOrInitial<Product>(LOCAL_STORAGE_KEYS.PRODUCTS, memoryProducts);
@@ -151,77 +216,89 @@ export const dataService = {
   },
 
   async saveProduct(product: Partial<Product>): Promise<Product> {
+    const { category, ...cleanProduct } = product;
+
+    // 1. Persist to centralized backend database
+    let serverSaved: Product | null = null;
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cleanProduct),
+      });
+      if (res.ok) {
+        serverSaved = await res.json();
+      }
+    } catch (e) {
+      console.warn('API saveProduct notice:', e);
+    }
+
+    // 2. Also try Supabase
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      // If product is marked as featured, update others first (though DB trigger also handles this)
-      if (product.is_featured && product.id) {
-        await supabase
-          .from('products')
-          .update({ is_featured: false })
-          .neq('id', product.id);
-      }
-
-      // Avoid payload errors with joined fields
-      const { category, ...cleanProduct } = product;
-
-      if (product.id) {
-        const { data, error } = await supabase
-          .from('products')
-          .update(cleanProduct)
-          .eq('id', product.id)
-          .select('*, category:categories(*)')
-          .single();
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from('products')
-          .insert(cleanProduct)
-          .select('*, category:categories(*)')
-          .single();
-        if (error) throw error;
-        return data;
+      try {
+        if (cleanProduct.is_featured && cleanProduct.id) {
+          await supabase.from('products').update({ is_featured: false }).neq('id', cleanProduct.id);
+        }
+        if (cleanProduct.id) {
+          await supabase.from('products').update(cleanProduct).eq('id', cleanProduct.id);
+        } else {
+          await supabase.from('products').insert(cleanProduct);
+        }
+      } catch (err) {
+        // silent fallback
       }
     }
 
-    // Local fallback
+    // 3. Update local cache
     const items = getStoredOrInitial<Product>(LOCAL_STORAGE_KEYS.PRODUCTS, memoryProducts);
-    if (product.is_featured) {
+    if (cleanProduct.is_featured) {
       items.forEach((p) => {
         p.is_featured = false;
       });
     }
 
-    let updated: Product;
-    if (product.id) {
-      const idx = items.findIndex((i) => i.id === product.id);
-      if (idx !== -1) {
-        updated = { ...items[idx], ...product } as Product;
-        items[idx] = updated;
-      } else {
-        updated = product as Product;
-        items.push(updated);
-      }
+    const resultProd: Product = serverSaved || ({
+      ...cleanProduct,
+      id: cleanProduct.id || 'prod-' + Date.now(),
+      name_az: cleanProduct.name_az || '',
+      name_en: cleanProduct.name_en || '',
+      name_ru: cleanProduct.name_ru || '',
+      base_price: cleanProduct.base_price || 0,
+      is_available: cleanProduct.is_available ?? true,
+      display_order: cleanProduct.display_order || items.length + 1,
+      created_at: cleanProduct.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as Product);
+
+    const idx = items.findIndex((i) => i.id === resultProd.id);
+    if (idx !== -1) {
+      items[idx] = resultProd;
     } else {
-      updated = {
-        ...product,
-        id: 'prod-' + Date.now(),
-        display_order: items.length + 1,
-        created_at: new Date().toISOString(),
-      } as Product;
-      items.push(updated);
+      items.push(resultProd);
     }
+
     memoryProducts = items;
     saveToLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS, items);
-    return updated;
+    return resultProd;
   },
 
   async deleteProduct(id: string): Promise<void> {
+    // 1. Delete on central server
+    try {
+      await fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch (e) {
+      console.warn('API deleteProduct notice:', e);
+    }
+
+    // 2. Delete on Supabase
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.from('products').delete().eq('id', id);
-      if (error) throw error;
-      return;
+      try {
+        await supabase.from('products').delete().eq('id', id);
+      } catch (err) {
+        // silent fallback
+      }
     }
 
     const items = getStoredOrInitial<Product>(LOCAL_STORAGE_KEYS.PRODUCTS, memoryProducts);
@@ -231,24 +308,36 @@ export const dataService = {
   },
 
   async setFeaturedProduct(productId: string): Promise<void> {
-    const supabase = getSupabaseClient();
-    if (isSupabaseConfigured && supabase) {
-      await supabase.from('products').update({ is_featured: false }).neq('id', productId);
-      const { error } = await supabase.from('products').update({ is_featured: true }).eq('id', productId);
-      if (error) throw error;
-      return;
+    const prods = await this.getProducts();
+    const target = prods.find((p) => p.id === productId);
+    if (target) {
+      await this.saveProduct({ ...target, is_featured: true });
     }
-
-    const items = getStoredOrInitial<Product>(LOCAL_STORAGE_KEYS.PRODUCTS, memoryProducts);
-    items.forEach((p) => {
-      p.is_featured = p.id === productId;
-    });
-    memoryProducts = items;
-    saveToLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS, items);
   },
 
   // ================= GALLERY =================
   async getGalleryImages(): Promise<GalleryImage[]> {
+    // 1. Fetch from centralized backend database
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/gallery', {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            memoryGallery = data;
+            saveToLocalStorage(LOCAL_STORAGE_KEYS.GALLERY, data);
+            return data;
+          }
+        }
+      } catch (err) {
+        // network fallback
+      }
+    }
+
+    // 2. Fallback to Supabase if available
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
       try {
@@ -258,69 +347,89 @@ export const dataService = {
           .order('display_order', { ascending: true });
 
         if (!error && data && data.length > 0) {
+          memoryGallery = data;
+          saveToLocalStorage(LOCAL_STORAGE_KEYS.GALLERY, data);
           return data;
         }
       } catch (err) {
-        console.warn('Supabase fetch gallery failed, using fallback:', err);
+        console.warn('Supabase fetch gallery fallback:', err);
       }
     }
+
     return getStoredOrInitial(LOCAL_STORAGE_KEYS.GALLERY, memoryGallery);
   },
 
   async saveGalleryImage(image: Partial<GalleryImage>): Promise<GalleryImage> {
+    // 1. Persist to centralized backend database
+    let serverSaved: GalleryImage | null = null;
+    try {
+      const res = await fetch('/api/gallery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(image),
+      });
+      if (res.ok) {
+        serverSaved = await res.json();
+      }
+    } catch (e) {
+      console.warn('API saveGalleryImage notice:', e);
+    }
+
+    // 2. Also try Supabase
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      if (image.id) {
-        const { data, error } = await supabase
-          .from('gallery_images')
-          .update(image)
-          .eq('id', image.id)
-          .select()
-          .single();
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from('gallery_images')
-          .insert(image)
-          .select()
-          .single();
-        if (error) throw error;
-        return data;
+      try {
+        if (image.id) {
+          await supabase.from('gallery_images').update(image).eq('id', image.id);
+        } else {
+          await supabase.from('gallery_images').insert(image);
+        }
+      } catch (err) {
+        // silent fallback
       }
     }
 
+    // 3. Update local cache
     const items = getStoredOrInitial<GalleryImage>(LOCAL_STORAGE_KEYS.GALLERY, memoryGallery);
-    let updated: GalleryImage;
-    if (image.id) {
-      const idx = items.findIndex((i) => i.id === image.id);
-      if (idx !== -1) {
-        updated = { ...items[idx], ...image } as GalleryImage;
-        items[idx] = updated;
-      } else {
-        updated = image as GalleryImage;
-        items.push(updated);
-      }
+    const resultImg: GalleryImage = serverSaved || ({
+      ...image,
+      id: image.id || 'gal-' + Date.now(),
+      image_url: image.image_url || '',
+      caption_az: image.caption_az || '',
+      caption_en: image.caption_en || '',
+      caption_ru: image.caption_ru || '',
+      display_order: image.display_order || items.length + 1,
+      created_at: image.created_at || new Date().toISOString(),
+    } as GalleryImage);
+
+    const idx = items.findIndex((i) => i.id === resultImg.id);
+    if (idx !== -1) {
+      items[idx] = resultImg;
     } else {
-      updated = {
-        ...image,
-        id: 'gal-' + Date.now(),
-        display_order: items.length + 1,
-        created_at: new Date().toISOString(),
-      } as GalleryImage;
-      items.push(updated);
+      items.push(resultImg);
     }
+
     memoryGallery = items;
     saveToLocalStorage(LOCAL_STORAGE_KEYS.GALLERY, items);
-    return updated;
+    return resultImg;
   },
 
   async deleteGalleryImage(id: string): Promise<void> {
+    // 1. Delete on central server
+    try {
+      await fetch(`/api/gallery?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch (e) {
+      console.warn('API deleteGalleryImage notice:', e);
+    }
+
+    // 2. Delete on Supabase
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.from('gallery_images').delete().eq('id', id);
-      if (error) throw error;
-      return;
+      try {
+        await supabase.from('gallery_images').delete().eq('id', id);
+      } catch (err) {
+        // silent fallback
+      }
     }
 
     const items = getStoredOrInitial<GalleryImage>(LOCAL_STORAGE_KEYS.GALLERY, memoryGallery);
