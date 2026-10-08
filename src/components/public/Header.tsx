@@ -53,9 +53,9 @@ export const Header: React.FC = () => {
     <>
       {/* Top Banner Bar for Operating Hours, Location & Quick Contacts */}
       <div className="bg-[#f6efe7] border-b border-[#ebdcd0] text-[11px] sm:text-xs text-[#5c4738] py-2 px-3 sm:px-4 transition-colors">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          {/* Left: Open/Closed Status, Hours, & Address */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="max-w-7xl mx-auto flex items-center justify-center sm:justify-between gap-3">
+          {/* Left: Open/Closed Status, Hours, & Address (hidden on mobile to prevent overflow) */}
+          <div className="hidden sm:flex items-center gap-2 sm:gap-3 min-w-0">
             <div className="flex items-center gap-1.5 font-medium">
               <span
                 className={`w-2 h-2 rounded-full inline-block animate-pulse shrink-0 ${
@@ -84,12 +84,12 @@ export const Header: React.FC = () => {
               href="https://wa.me/994554490007?text=Salam,%20RoastBar-la%20əlaqə%20saxlayıram"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-[#1b7a37] hover:text-[#25D366] font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#1b7a37] hover:text-[#25D366] font-semibold transition-colors"
             >
               <WhatsAppIcon className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
             </a>
-            <span className="hidden sm:inline text-[#ebdcd0]">|</span>
+            <span className="text-[#ebdcd0]">|</span>
             <a
               href="tel:+994554490007"
               className="flex items-center gap-1.5 text-[#8f5222] hover:text-[#b87333] font-semibold transition-colors"
