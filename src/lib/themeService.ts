@@ -1,4 +1,5 @@
 import { THEME_PRESETS, ThemePreset } from './themePresets';
+import { getSupabaseClient, isSupabaseConfigured } from './supabase/client';
 
 const STORAGE_KEY = 'roastbar_site_theme';
 const STYLE_ELEMENT_ID = 'roastbar-dynamic-theme-style';
@@ -33,6 +34,29 @@ export const themeService = {
 
   async fetchServerThemeId(): Promise<string | null> {
     if (typeof window === 'undefined') return null;
+
+    // 1. Try direct Supabase site_settings table
+    const supabase = getSupabaseClient();
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'theme')
+          .single();
+
+        if (!error && data?.value) {
+          const themeId = typeof data.value === 'string' ? data.value : data.value.themeId;
+          if (themeId && THEME_PRESETS.some((p) => p.id === themeId)) {
+            return themeId;
+          }
+        }
+      } catch {
+        // fallback
+      }
+    }
+
+    // 2. Fallback to API
     try {
       const res = await fetch('/api/theme', {
         cache: 'no-store',
@@ -45,7 +69,7 @@ export const themeService = {
         }
       }
     } catch {
-      // offline or silent fallback
+      // offline fallback
     }
     return null;
   },
@@ -57,14 +81,28 @@ export const themeService = {
       this.applyTheme(themeId);
       window.dispatchEvent(new Event('themechange'));
 
-      // Persist to server so ALL devices (phones, tablets, other PCs) adopt this theme as default
+      // 1. Save directly to Supabase site_settings table
+      const supabase = getSupabaseClient();
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase.from('site_settings').upsert({
+            key: 'theme',
+            value: themeId,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (err) {
+          console.warn('Supabase site_settings upsert notice:', err);
+        }
+      }
+
+      // 2. Also persist to backend API
       await fetch('/api/theme', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ themeId }),
       });
     } catch (e) {
-      console.warn('Failed to save theme to server:', e);
+      console.warn('Failed to save theme:', e);
     }
   },
 

@@ -11,30 +11,16 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function checkAuth() {
-      // 1. Check local admin token
-      if (typeof window !== 'undefined' && localStorage.getItem('roastbar_local_admin_auth') === 'true') {
-        setIsAuthenticated(true);
-        return;
-      }
-
-      // 2. Supabase session check
       const supabase = getSupabaseClient();
       if (isSupabaseConfigured && supabase) {
         try {
           const { data } = await supabase.auth.getSession();
-          if (data?.session) {
-            setIsAuthenticated(true);
-            return;
-          }
+          setIsAuthenticated(Boolean(data?.session));
 
           const {
             data: { subscription },
           } = supabase.auth.onAuthStateChange((_event, session) => {
-            if (session) {
-              setIsAuthenticated(true);
-            } else if (localStorage.getItem('roastbar_local_admin_auth') !== 'true') {
-              setIsAuthenticated(false);
-            }
+            setIsAuthenticated(Boolean(session));
           });
 
           return () => {
@@ -57,7 +43,6 @@ export default function AdminPage() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
     }
-    localStorage.removeItem('roastbar_local_admin_auth');
     setIsAuthenticated(false);
   };
 

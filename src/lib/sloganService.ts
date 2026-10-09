@@ -6,6 +6,8 @@
  * əsas şüarlar, başlıqlar və bölmə təsvirləri.
  */
 
+import { getSupabaseClient, isSupabaseConfigured } from './supabase/client';
+
 export interface LanguageSlogans {
   // Hero Bölməsi
   heroBadge: string;
@@ -122,6 +124,33 @@ export const sloganService = {
 
   async syncWithServer(): Promise<MultilingualSlogans | null> {
     if (typeof window === 'undefined') return null;
+
+    // 1. Try direct Supabase site_settings table
+    const supabase = getSupabaseClient();
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'slogans')
+          .single();
+
+        if (!error && data?.value && (data.value.az || data.value.en || data.value.ru)) {
+          const merged: MultilingualSlogans = {
+            az: { ...DEFAULT_MULTILINGUAL_SLOGANS.az, ...(data.value.az || {}) },
+            en: { ...DEFAULT_MULTILINGUAL_SLOGANS.en, ...(data.value.en || {}) },
+            ru: { ...DEFAULT_MULTILINGUAL_SLOGANS.ru, ...(data.value.ru || {}) },
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          window.dispatchEvent(new Event('sloganschange'));
+          return merged;
+        }
+      } catch {
+        // fallback
+      }
+    }
+
+    // 2. Fallback to server API
     try {
       const res = await fetch('/api/slogans', {
         cache: 'no-store',
@@ -163,7 +192,21 @@ export const sloganService = {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
       window.dispatchEvent(new Event('sloganschange'));
 
-      // Persist to central database server so all devices see the change
+      // 1. Direct Supabase site_settings upsert
+      const supabase = getSupabaseClient();
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase.from('site_settings').upsert({
+            key: 'slogans',
+            value: all,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (err) {
+          console.warn('Supabase site_settings slogans upsert notice:', err);
+        }
+      }
+
+      // 2. Persist to central backend API
       await fetch('/api/slogans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -181,7 +224,21 @@ export const sloganService = {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newAll));
       window.dispatchEvent(new Event('sloganschange'));
 
-      // Persist to central database server
+      // 1. Direct Supabase site_settings upsert
+      const supabase = getSupabaseClient();
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase.from('site_settings').upsert({
+            key: 'slogans',
+            value: newAll,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (err) {
+          console.warn('Supabase site_settings all slogans upsert notice:', err);
+        }
+      }
+
+      // 2. Persist to central backend API
       await fetch('/api/slogans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -201,6 +258,19 @@ export const sloganService = {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
       window.dispatchEvent(new Event('sloganschange'));
 
+      const supabase = getSupabaseClient();
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase.from('site_settings').upsert({
+            key: 'slogans',
+            value: all,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (err) {
+          console.warn('Supabase site_settings slogans reset notice:', err);
+        }
+      }
+
       await fetch('/api/slogans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -217,6 +287,19 @@ export const sloganService = {
     try {
       localStorage.removeItem(STORAGE_KEY);
       window.dispatchEvent(new Event('sloganschange'));
+
+      const supabase = getSupabaseClient();
+      if (isSupabaseConfigured && supabase) {
+        try {
+          await supabase.from('site_settings').upsert({
+            key: 'slogans',
+            value: DEFAULT_MULTILINGUAL_SLOGANS,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (err) {
+          console.warn('Supabase site_settings reset all notice:', err);
+        }
+      }
 
       await fetch('/api/slogans', {
         method: 'POST',

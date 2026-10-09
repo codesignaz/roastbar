@@ -22,32 +22,21 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      // 1. Master admin credential check
-      const isMasterAdmin =
-        (email.trim().toLowerCase() === 'admin@roastbar.az' && password === 'roastbar2026') ||
-        (email.trim().toLowerCase() === 'admin' && password === 'roastbar2026');
-
-      if (isMasterAdmin) {
-        localStorage.setItem('roastbar_local_admin_auth', 'true');
-        onLoginSuccess();
+      const supabase = getSupabaseClient();
+      if (!isSupabaseConfigured || !supabase) {
+        setErrorMessage('Supabase bazası konfiqurasiya edilməyib.');
         return;
       }
 
-      // 2. Supabase Auth fallback if configured
-      const supabase = getSupabaseClient();
-      if (isSupabaseConfigured && supabase) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password: password,
-        });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
+      });
 
-        if (error) {
-          setErrorMessage(error.message || 'Giriş məlumatları yanlışdır.');
-        } else if (data.session) {
-          onLoginSuccess();
-        }
-      } else {
-        setErrorMessage('Email və ya şifrə yanlışdır. (İlkin sınaq: admin@roastbar.az / roastbar2026)');
+      if (error) {
+        setErrorMessage(error.message || 'Giriş məlumatları yanlışdır.');
+      } else if (data.session) {
+        onLoginSuccess();
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Giriş zamanı xəta baş verdi.');
@@ -91,7 +80,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@roastbar.az"
+                placeholder="admin@example.com"
                 autoComplete="email"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#fdfbf7] border border-[#ebdcd0] text-sm text-[#221710] placeholder-[#9c897b] focus:outline-none focus:border-[#b87333] focus:ring-1 focus:ring-[#b87333] transition-all"
               />
