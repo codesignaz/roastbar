@@ -1,0 +1,16 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 0 * * 2,5'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        run: |
+          curl -X GET "${{ secrets.https://dpmtprwcojcmthfreepl.supabase.co }}/rest/v1/categories?select=id&limit=1" \
+          -H "apikey: ${{ secrets.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbXRwcndjb2pjbXRoZnJlZXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0ODQ3NjcsImV4cCI6MjEwNzA2MDc2N30.IIIgPTM7rCwGw5HXFA6MRtm7C6mb9dJC6vADzQPJ5rc }}" \
+          -H "Authorization: Bearer ${{ secrets.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbXRwcndjb2pjbXRoZnJlZXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0ODQ3NjcsImV4cCI6MjEwNzA2MDc2N30.IIIgPTM7rCwGw5HXFA6MRtm7C6mb9dJC6vADzQPJ5rc }}"
